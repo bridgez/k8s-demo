@@ -7,7 +7,7 @@
   - name: 1. copy sshkey
     authorized_key: 
       user: root 
-      key: "{{ lookup('file', '/home/xuepz/.ssh/id_rsa.pub') }}"
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     tags:
       - init
   - name: 2. yum upgrade OS
