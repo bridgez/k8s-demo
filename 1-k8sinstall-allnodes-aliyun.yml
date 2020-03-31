@@ -1,0 +1,23 @@
+---
+- hosts: all
+  remote_user: root
+  vars:
+    packages: kubelet,kubeadm,kubectl
+  tasks:
+  - name: 1. add k8s aliyun repo
+    yum_repository:
+      name: kubernetes
+      description: kubernetes
+      file: k8s
+      baseurl: https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+      gpgcheck: yes
+      gpgkey: https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+  - name: 2. install the packages
+    yum:
+      name: "{{packages}}"
+      state: latest
+  - name: 3. start kubelet
+    service:
+      name: kubelet
+      state: started
+      enabled: yes   
