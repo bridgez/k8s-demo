@@ -13,8 +13,8 @@ case $re in
         echo "backup $NODE"
         sudo virsh dumpxml $NODE |awk -F"'" '/source file/{print $(NF-1)}'
 				IMG=`sudo virsh dumpxml $NODE |awk -F"'" '/source file/{print $(NF-1)}'`
-				OVL=/mnt/wd/images/$NODE.ovl
-				sudo virsh destroy $NODE
+				OVL=/var/lib/libvirt/ovl/$NODE.ovl
+				sudo virsh list |grep host10 && sudo virsh destroy $NODE
 				sudo qemu-img create -q -f qcow2 -b $IMG $OVL
 				sudo sed -i.bak "s#$IMG#$OVL#g" /etc/libvirt/qemu/$NODE.xml
 				sudo virsh define /etc/libvirt/qemu/$NODE.xml

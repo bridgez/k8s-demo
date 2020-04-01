@@ -12,16 +12,14 @@
       baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
       gpgcheck: yes
       gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-#  - name: 2. add proxy for yum  
-#    lineinfile:
-#      dest: /etc/yum.conf
-#      insertafter: '^distr'
-#      line: proxy=https://proxy.p1.event.ibm.com:8080
-  - name: 3. install the packages
+      proxy: https://proxy.p1.event.ibm.com:8080
+      proxy_username: xuepz@cn.ibm.com
+      proxy_password: Makepr0gress123
+  - name: 2. install the packages
     yum:
       name: "{{packages}}"
       state: latest
-  - name: 4. start kubelet
+  - name: 3. start kubelet
     service:
       name: kubelet
       state: started

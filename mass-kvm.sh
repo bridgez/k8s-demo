@@ -1,11 +1,12 @@
 #!/bin/bash
+Path=/mnt/wd/images/
 NUM=$1 
 pre_check()
 {
 virsh list --all|grep host$NUM
 if [ $? -eq 0 ];then
-    virsh destroy host$NUM
-    virsh undefine host$NUM
+    virsh destroy node$NUM
+    virsh undefine node$NUM
 fi
 }
 ks_create()
@@ -32,7 +33,7 @@ lang en_US.UTF-8
 
 # Network information
 network  --bootproto=static --device=eth0 --gateway=192.168.122.1 --ip=192.168.122.$NUM --nameserver=192.168.122.1 --netmask=255.255.255.0 --ipv6=auto --activate
-network  --hostname=host$NUM.192.168.122.$NUM.nip.io
+network  --hostname=node$NUM.192.168.122.$NUM.nip.io
 
 # Root password
 rootpw --iscrypted \$6\$bkhALDhuppF0ExEU\$5Fa6R40H2j7DuaEQihaNjmqtvtp8dKstTNvjGY3fdsMmvvSoQSQ6CJ.zlZbaMaQrMtTR5ZTvwFOWp1liYSKYN/
@@ -80,11 +81,11 @@ EOF
 }
 img_create()
 {
-cd /var/lib/libvirt/images/; qemu-img create -f qcow2 host$NUM.img 20G
+cd $Path; qemu-img create -f qcow2 node$NUM.img 50G
 }
 vm_create()
 {
-virt-install --os-variant rhel7 --name host$NUM --vcpu 2 --memory 3072 --disk /var/lib/libvirt/images/host$NUM.img --mac=00:16:3e:50:9b:$NUM --location /tools/CentOS-7-x86_64-DVD-1908.iso --initrd-inject=/tmp/ks$NUM.cfg --extra-args "ks=file:/ks$NUM.cfg" -x "ip=192.168.122.$NUM netmask=255.255.255.0 dns=192.168.122.1 gateway=192.168.122.1"
+virt-install --os-variant rhel7 --name node$NUM --vcpu 2 --memory 4096 --disk /var/lib/libvirt/images/node$NUM.img --mac=00:16:3e:50:9b:$NUM --location /tools/CentOS-7-x86_64-DVD-1908.iso --initrd-inject=/tmp/ks$NUM.cfg --extra-args "ks=file:/ks$NUM.cfg" -x "ip=192.168.122.$NUM netmask=255.255.255.0 dns=192.168.122.1 gateway=192.168.122.1"
 }
 pre_check $NUM
 ks_create $NUM
