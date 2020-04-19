@@ -31,7 +31,7 @@ lang en_US.UTF-8
 
 
 # Network information
-network  --bootproto=static --device=eth0 --gateway=9.111.105.1 --ip=9.111.105.$NUM --nameserver=9.115.17.20 --netmask=255.255.255.0 --ipv6=auto --activate
+network  --bootproto=static --device=eth0 --gateway=9.111.105.1 --ip=9.111.105.$NUM --nameserver=8.8.8.8 --netmask=255.255.255.0 --ipv6=auto --activate
 network  --hostname=node$NUM.9.111.105.$NUM.nip.io
 
 # Root password
@@ -82,7 +82,7 @@ cd /home/VM/; qemu-img create -f qcow2 node$NUM.img 50G
 }
 vm_create()
 {
-virt-install --os-variant rhel7 --name node$NUM --vcpu 4 --memory 8196 --disk /home/VM/node$NUM.img --mac=00:16:3e:50:9b:a1 --location /home/CentOS-7-x86_64-DVD-1908.iso --initrd-inject=/tmp/ks$NUM.cfg --network bridge=br1 --extra-args "ks=file:/ks$NUM.cfg" -x "ip=192.168.122.$NUM netmask=255.255.255.0 dns=9.115.17.20 gateway=9.111.105.1"
+virt-install --os-variant rhel7 --name node$NUM --vcpu 4 --memory 8196 --disk /home/VM/node$NUM.img --location /home/CentOS-7-x86_64-DVD-1908.iso --initrd-inject=/tmp/ks$NUM.cfg --network bridge=br1 --extra-args "ks=file:/ks$NUM.cfg" -x "ip=9.111.105.$NUM netmask=255.255.255.0 dns=9.115.17.20 gateway=9.111.105.1"
 }
 pre_check $NUM
 ks_create $NUM
