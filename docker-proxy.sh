@@ -1,10 +1,10 @@
 #!/bin/bash
 SRC=`echo $1 | cut -d'/' -f1`
-IMG=`echo $1 | cut -d'/' -f2`
+IMG=`echo $1 | cut -d'/' -f2-3`
 cat <<eof
 ####################
 1. k8s.gcr.io
-2. reset
+2. quay.io
 3. quit
 ####################
 eof
@@ -17,10 +17,14 @@ case $SRC in
         docker pull $PROXY/$IMG
         docker tag $PROXY/$IMG $1
         docker rmi $PROXY/$IMG
-
-				;;
-2|reset)
-        echo "reset";;
+	;;
+2|quay.io)
+        echo "quay.io"
+        PROXY=quay.azk8s.cn
+        docker pull $PROXY/$IMG
+        docker tag $PROXY/$IMG $1
+        docker rmi $PROXY/$IMG
+        ;;
 3|quit)
         echo "quit" && exit
         ;;
