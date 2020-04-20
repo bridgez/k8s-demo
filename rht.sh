@@ -1,4 +1,9 @@
 #!/bin/bash
+if [ $# -eq 0 ]
+then 
+echo "pls input the node"
+exit 1
+fi
 NODE=$1
 cat <<eof
 ####################
@@ -13,7 +18,7 @@ case $re in
         echo "backup $NODE"
         sudo virsh dumpxml $NODE |awk -F"'" '/source file/{print $(NF-1)}'
 				IMG=`sudo virsh dumpxml $NODE |awk -F"'" '/source file/{print $(NF-1)}'`
-				OVL=/var/lib/libvirt/ovl/$NODE.ovl
+				OVL=`echo $IMG | sed 's/img/ovl/g'`
 				sudo virsh list |grep host10 && sudo virsh destroy $NODE
 				sudo qemu-img create -q -f qcow2 -b $IMG $OVL
 				sudo sed -i.bak "s#$IMG#$OVL#g" /etc/libvirt/qemu/$NODE.xml
