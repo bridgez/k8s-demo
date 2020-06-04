@@ -30,3 +30,5 @@
       dest: /etc/fstab
       state: absent
       regexp: 'swap'
+  - name: 7. reboot to take effect/need to modify
+    command: reboot
