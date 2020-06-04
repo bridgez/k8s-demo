@@ -14,7 +14,7 @@
       gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
       proxy: https://proxy.p1.event.ibm.com:8080
       proxy_username: xuepz@cn.ibm.com
-      proxy_password: Makepr0gress123
+      proxy_password: mypass
   - name: 2. install the packages
     yum:
       name: "{{packages}}"
