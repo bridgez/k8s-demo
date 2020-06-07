@@ -4,14 +4,14 @@
   vars:
     packages: kubelet,kubeadm,kubectl,lftp
   tasks:
-  - name: 1. add k8s aliyun repo
+  - name: 1. add k8s repo
     yum_repository:
       name: kubernetes
       description: kubernetes
       file: k8s
       baseurl: ftp://9.111.105.105/pub/k8s-repo/
       gpgcheck: no
-      
+
   - name: 2. install the packages
     yum:
       name: "{{packages}}"
@@ -20,9 +20,24 @@
     service:
       name: kubelet
       state: started
-      enabled: yes       
-  - name: ４.　rsync images
+      enabled: yes
+  - name: 4.rsync images
     command: lftp 9.111.105.105 -e "mirror pub/k8s-images/ . ;exit"
-  - name: ５.　load images
-    command: for i in *.tar; do docker load -i $i; done
-
+  - name: 5.load images
+    command: "{{ item }}"
+    with_items:
+    - "docker load -i centos.tar"
+    - "docker load -i coredns:1.6.7.tar"
+    - "docker load -i etcd:3.4.3-0.tar"
+    - "docker load -i flannel.tar"
+    - "docker load -i httpd.tar"
+    - "docker load -i kube-apiserver:v1.18.0.tar"
+    - "docker load -i kube-controller-manager:v1.18.0.tar"
+    - "docker load -i kube-proxy:v1.18.0.tar"
+    - "docker load -i kube-scheduler:v1.18.0.tar"
+    - "docker load -i kube-webhook-certgen_v1.2.0.tar"
+    - "docker load -i mycentos.tar"
+    - "docker load -i nginx-ingress-controller_0.32.0.tar"
+    - "docker load -i nginx.tar"
+    - "docker load -i pause:3.2.tar"
+    - "docker load -i tiller.tar"
