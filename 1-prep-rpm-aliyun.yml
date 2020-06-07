@@ -2,7 +2,7 @@
 - hosts: all
   remote_user: root
   vars:
-    packages: kubelet,kubeadm,kubectl
+    packages: kubelet,kubeadm,kubectl,lftp
   tasks:
   - name: 1. add k8s aliyun repo
     yum_repository:
