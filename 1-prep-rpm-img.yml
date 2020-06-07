@@ -9,9 +9,9 @@
       name: kubernetes
       description: kubernetes
       file: k8s
-      baseurl: https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
-      gpgcheck: yes
-      gpgkey: https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+      baseurl: ftp://9.111.105.105/pub/k8s-repo/
+      gpgcheck: no
+      
   - name: 2. install the packages
     yum:
       name: "{{packages}}"
@@ -20,4 +20,9 @@
     service:
       name: kubelet
       state: started
-      enabled: yes   
+      enabled: yes       
+  - name: ４.　rsync images
+    command: lftp 9.111.105.105 -e "mirror pub/k8s-images/ . ;exit"
+  - name: ５.　load images
+    command: for i in *.tar; do docker load -i $i; done
+
