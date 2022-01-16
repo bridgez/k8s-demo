@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-s
+spec:
+  serviceName: "nginx-s"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-s
+  template:
+    metadata:
+      labels:
+        app: nginx-s
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: nginx-s
+        image: nginx
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: nginx-s
+        volumeMounts:
+        - name: nginx-volume
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: nginx-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: nfs-sc
+      resources:
+        requests:
+          storage: 10Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-s
+  labels:
+    app: nginx-s
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx-s
