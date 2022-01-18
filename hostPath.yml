@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-pod
+spec:
+  containers:
+  - image: nginx
+    name: hostpath-pod
+    volumeMounts:
+    - mountPath: /usr/share/nginx/html
+      name: html
+  volumes:
+  - name: html # 名称
+    hostPath: # 存储类型
+      path: /data # 物理节点上的真实路径
+      type: Directory # 如果该路径不存在讲如何处理，Directory是要求目录必须存在
