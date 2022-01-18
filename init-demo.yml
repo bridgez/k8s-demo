@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: init-demo
+spec:
+  selector:
+    matchLabels:
+      app: init-demo
+  template:
+    metadata:
+      labels:
+        app: init-demo
+    spec:
+      initContainers: 
+      - name: init-c
+        image: busybox:latest 
+        #command: ['sh', '-c', 'if [ `find /app/ -mtime +6 |grep index.html` ];then wget -O /app/index.html http://www.baidu.com/index.html;fi']  
+        command: ['sh', '-c', 'wget -O /app/index.html http://www.baidu.com/index.html']  
+        volumeMounts:
+          - mountPath: /app
+            name: app-volume
+      containers:
+      - name: main-c
+        image: nginx:latest
+        volumeMounts:
+          - mountPath: /usr/share/nginx/html
+            name: app-volume
+        resources: {}
+        ports:
+        - containerPort: 80
+      volumes: 
+        - name: app-volume
+          emptyDir: {} 
