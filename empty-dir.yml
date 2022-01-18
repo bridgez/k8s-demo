@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: producer-consumer
+spec:
+  containers:
+  - image: busybox
+    name: producer
+    volumeMounts:                                    # 将shared-volume mount 到 producer_dir目录
+    - mountPath: /producer_dir
+      name: shared-volume
+    args:                                            # 将数据写入到文件hello中
+    - /bin/sh
+    - -c
+    - echo "hello world" > /producer_dir/hello ; sleep 30000
+    
+  - image: busybox
+    name: consumer
+    volumeMounts:                                    # 将shared-volume mount 到 /consumer_dir
+    - mountPath: /consumer_dir
+      name: shared-volume
+    args:
+    - /bin/sh
+    - -c
+    - cat /consumer_dir/hello ; sleep 30000           # 通过cat从文件hello读数据
+    
+  volumes:                                            # 定义了一个emptyDir类型的Volume,名字是shared-volume.
+  - name: shared-volume
+    emptyDir: {}   
